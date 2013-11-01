@@ -1,5 +1,4 @@
-# Enumerate [![Build Status](https://secure.travis-ci.org/TwilightCoders/enumerate.png)](http://travis-ci.org/TwilightCoders/enumerate)
-# Enumerate [![Gem Version](https://badge.fury.io/rb/enumerate.png)](http://badge.fury.io/rb/enumerate)
+# Enumerate [![Build Status](https://secure.travis-ci.org/TwilightCoders/enumerate.png)](http://travis-ci.org/TwilightCoders/enumerate) [![Gem Version](https://badge.fury.io/rb/enumerate.png)](http://badge.fury.io/rb/enumerate)
 
 Enumerate adds an enum command to all ActiveRecord models which enables you to work with integer and string attributes as if they were enums
 
