@@ -23,40 +23,51 @@ module Enumerate
       
       # Sets a class costant with the enumerated values
       const_set(const_hash_name, vals)
+      
+      setup_accessors(const_hash_name, attribute)
 
-      unless methods.include?(attribute.to_s)
-        self.class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          def #{attribute.to_s}
-            #{const_hash_name}.key(read_attribute(:#{attribute}))
-          end
-        RUBY
-      end
-    
-      unless methods.include?("#{attribute.to_s}=")
-        self.class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          def #{attribute.to_s}=(s)
-            write_attribute(:#{attribute}, #{const_hash_name}[s.to_sym])
-          end
-        RUBY
-      end
-
-      vals.each do |key, val|
-        raise "Collision in enumeration predicate method(s) #{key}" if respond_to?("#{key.to_s}?") or respond_to?("#{key.to_s}!") or respond_to?("#{key.to_s}")
-    
-        define_method "#{key.to_s}?" do
-          send("status") == key
-        end
-    
-        define_method "#{key.to_s}!" do
-          send("status=", key)
-        end
-    
-        # Define helper scopes
-        scope key.to_sym, lambda { where(:status => val) }
-    
-      end
+      setup_predicates(vals, attribute)
 
     end
+
+    private
+    
+      def setup_accessors(const_hash_name, attribute)
+        unless methods.include?(attribute.to_s)
+          self.class_eval <<-RUBY, __FILE__, __LINE__ + 1
+            def #{attribute.to_s}
+              #{const_hash_name}.key(read_attribute(:#{attribute}))
+            end
+          RUBY
+        end
+      
+        unless methods.include?("#{attribute.to_s}=")
+          self.class_eval <<-RUBY, __FILE__, __LINE__ + 1
+            def #{attribute.to_s}=(s)
+              write_attribute(:#{attribute}, #{const_hash_name}[s.to_sym])
+            end
+          RUBY
+        end
+      end
+
+      def setup_predicates(vals, attribute)
+          vals.each do |key, val|
+              raise "Collision in enumeration predicate method(s) #{key}" if respond_to?("#{key.to_s}?") or respond_to?("#{key.to_s}!") or respond_to?("#{key.to_s}")
+              
+              define_method "#{key.to_s}?" do
+                send("#{attribute.to_s}") == key
+              end
+              
+              define_method "#{key.to_s}!" do
+                send("#{attribute.to_s}=", key)
+              end
+              
+              # Define helper scopes
+              self.class_eval <<-RUBY, __FILE__, __LINE__ + 1
+                scope :#{key}, lambda { where(:#{attribute} => #{val}) }
+              RUBY
+          end
+      end
 
   end
 

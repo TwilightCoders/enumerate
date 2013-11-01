@@ -8,13 +8,13 @@ Gem::Specification.new do |s|
   s.authors     = ["Dale"]
   s.email       = ["dale@twilightcoders.net"]
   s.homepage    = "http://github.com/twilightcoders/enumerate"
-  s.summary     = %q{enumerate adds an `enumerate` command to all ActiveRecord models which enables you to work with string or integer attributes as if they were enums}
+  s.summary     = %q{Enumerate adds an `enumerate` command to all ActiveRecord models, enabling you to work with string or integer columns as if they were enums.}
   s.description =  <<-END
-    Enumerate lets you add an enum command to ActiveRecord models
+    Enumerate adds an `enumerate` command to all ActiveRecord models, enabling you to work with string or integer columns as if they were enums.
 
-    There are four things that the enumerate gems adds to your model
-      Validation - The enumerate adds a validation to make sure that the field only receives accepted values
-      Predicate Methods - adds ? and ! functions for each enum value (canceled? - is it canceled, canceled! - change the state to canceled)
+    The following features are added to your model:
+      Validation - ensures that the field only receives accepted values
+      Predicate Methods - adds ? and ! functions for each enum value
       Scopes - you can easily query for values of the enum
   END
   s.license     = 'MIT'
