@@ -11,7 +11,7 @@ class OtherModel < ActiveRecord::Base
 
   belongs_to :model
 
-  enumerate :status, [:active, :expired, :not_expired]
+  enumerate :status, [:active, :expired]
 end
 
 class ModelAllowingNil < ActiveRecord::Base
@@ -21,7 +21,7 @@ class ModelAllowingNil < ActiveRecord::Base
 
   belongs_to :model
 
-  enumerate :status, [:active, :expired, :not_expired], :allow_nil => true
+  enumerate :status, [:active, :expired], :allow_nil => true
 end
 
 
@@ -37,7 +37,6 @@ describe :Enumerate do
 
     @active_obj = OtherModel.create!(:status => :active, :model => @obj)
     @expired_obj = OtherModel.create!(:status => :expired, :model => @canceled_obj)
-    @not_expired_obj = OtherModel.create!(:status => :not_expired, :model => @canceled_obj)
   end
 
   describe "allow nil" do
@@ -65,11 +64,13 @@ describe :Enumerate do
   describe "short hand methods" do
     describe "question mark (?)" do
       it "should return true if value of enum equals a value" do
-        @obj.available?.should be_true
+		@obj.available?.should be_true
+		@obj.not_canceled?.should be_true
       end
-
+	  
       it "should return false if value of enum is different " do
-        @obj.canceled?.should be_false
+		@obj.canceled?.should be_false
+		@obj.not_available?.should be_false
       end
 
     end
@@ -81,9 +82,10 @@ describe :Enumerate do
       end
     end
 
-    it "should have two shorthand methods for each possible value" do
-      Model::STATUSES.each do |key, val|
-        @obj.respond_to?("#{key}?").should be_true
+    it "should have three shorthand methods for each possible value" do
+	  Model::STATUSES.each do |key, val|
+		@obj.respond_to?("#{key}?").should be_true
+		@obj.respond_to?("not_#{key}?").should be_true
         @obj.respond_to?("#{key}!").should be_true
       end
     end
@@ -91,9 +93,9 @@ describe :Enumerate do
 
   describe "getting value" do
     it "should always return the enums value as a symbol" do
-      @obj.status.should == :available
+      @obj.status.kind_of?(Symbol).should be_true
       @obj.status = "canceled"
-      @obj.status.should == :canceled
+      @obj.status.kind_of?(Symbol).should be_true
     end
 
   end

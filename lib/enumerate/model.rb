@@ -44,31 +44,41 @@ module Enumerate
         unless methods.include?("#{attribute.to_s}=")
           self.class_eval <<-RUBY, __FILE__, __LINE__ + 1
             def #{attribute.to_s}=(s)
-              write_attribute(:#{attribute}, #{const_hash_name}[s.to_sym])
+			  if (s.kind_of?(Fixnum))
+                write_attribute(:#{attribute}, s)
+              elsif (s.kind_of?(Symbol) or s.kind_of?(String))
+			  # 	puts "changing to \#{s}"
+			    write_attribute(:#{attribute}, #{const_hash_name}[s.to_sym])
+				#	puts "is now \#{#{attribute}}"
+              end
             end
           RUBY
         end
       end
 
       def setup_predicates(vals, attribute)
-          vals.each do |key, val|
-              raise "Collision in enumeration predicate method(s) #{key}" if respond_to?("#{key.to_s}?") or respond_to?("#{key.to_s}!") or respond_to?("#{key.to_s}")
+		vals.each do |key, val|
+		  raise "Collision in enumeration predicate method(s) #{key}" if respond_to?("#{key.to_s}?") or respond_to?("#{key.to_s}!") or respond_to?("not_#{key.to_s}?") or respond_to?("#{attribute.to_s}")
               
-              define_method "#{key.to_s}?" do
-                send("#{attribute.to_s}") == key
-              end
+		  define_method "#{key.to_s}?" do
+			send("#{attribute.to_s}") == key
+		  end
+			  
+		  define_method "not_#{key.to_s}?" do
+			send("#{attribute.to_s}") != key
+		  end
               
-              define_method "#{key.to_s}!" do
-                send("#{attribute.to_s}=", key)
-              end
+		  define_method "#{key.to_s}!" do
+		    send("#{attribute.to_s}=", key)
+		  end
               
-              # Define helper scopes
-              self.class_eval <<-RUBY, __FILE__, __LINE__ + 1
-                scope :#{key}, lambda { where(:#{attribute} => #{val}) }
-              RUBY
-          end
+		  # Define helper scopes
+		  self.class_eval <<-RUBY, __FILE__, __LINE__ + 1
+			scope :#{key}, lambda { where(:#{attribute} => #{val}) }
+			scope :not_#{key}, lambda { where("#{attribute} != #{val}") }
+		  RUBY
+		end
       end
-
   end
 
 end

@@ -1,4 +1,4 @@
-module UrlFormatter
+module Enumerate
   class Railtie < Rails::Railtie
     initializer 'enumerate.model' do
       ActiveSupport.on_load :active_record do
