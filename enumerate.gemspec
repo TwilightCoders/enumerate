@@ -28,9 +28,9 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   # specify any dependencies here; for example:
-  s.add_development_dependency "rake"
-  s.add_development_dependency "rspec"
-  s.add_development_dependency "activerecord", '>= 3.0'
-  s.add_development_dependency "sqlite3"
-  s.add_development_dependency 'appraisal', '>= 0.3.8'
+  s.add_development_dependency "rake", '~> 0.9', '>= 0.9.3'
+  s.add_development_dependency 'rspec', '~> 2.3', '>= 2.3.0'
+  s.add_development_dependency 'activerecord', '~> 3.0', '>= 3.0.6'
+  s.add_development_dependency "sqlite3", '~> 1.3', '>= 1.3.3'
+  s.add_development_dependency 'appraisal', '~> 0.3', '>= 0.3.8'
 end

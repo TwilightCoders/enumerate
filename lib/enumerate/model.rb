@@ -4,8 +4,13 @@ module Enumerate
 
       validates_inclusion_of attribute, :in => vals, :allow_nil => !!opts[:allow_nil]
       
+      
       # Get the column type of the attribute. We support int and string
-      col_type = self.columns_hash[attribute.to_s].type
+	  if self.columns_hash[attribute.to_s].nil?
+        raise "Column '#{attribute}' does not exist in #{self.class.name}"
+      else
+        col_type = self.columns_hash[attribute.to_s].type
+	  end
       
       const_hash_name = attribute.to_s.pluralize.upcase
     
